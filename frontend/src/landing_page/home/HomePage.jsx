@@ -1,7 +1,7 @@
 import OpenAccount from "../OpenAccount";
 import Awards from "./Awards";
 import Education from "./Education";
-import Hero from "./hero";
+import Hero from "./Hero";
 
 import Pricing from "./pricing";
 import Stats from "./Stats"
