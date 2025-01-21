@@ -1,0 +1,49 @@
+.nav-link{
+    margin-left: 35px;
+}
+footer li{
+    list-style-type: none;
+    margin-bottom: 0.8rem;
+}
+footer a{
+    text-decoration: none;
+    margin-bottom: 1rem;
+}
+
+.fa-brands{
+    font-size: 1.3rem;
+    margin-left: 1rem;
+}
+.fa-brands:hover{
+    color: blue;
+}
+.footer-links{
+     align-items: center;
+     justify-content: space-between;
+}
+.list-links li{
+    display: inline;
+    margin-left: 2rem;
+}
+.list-links li a{
+    color:grey;
+}
+.list-links li a:hover{
+    color: blue;
+}
+.fa-bars{
+    color: grey;
+}
+.fa-bars:hover{
+    color: blue;
+}
+.nav-link{
+    font-weight: 600;
+}
+.nav-link:hover{
+    color: blue;
+}
+.nav-link.active{
+    color: blue !important;
+    /* font-weight: bold; */
+}
