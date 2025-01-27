@@ -4,7 +4,7 @@ function RightSection({ imgURL, productName, productDesc }) {
       <div className="container my-5">
         <div className="row mb-5">
           <div className="col-5 p-5 mt-5 align-bottom">
-            <h1 className="">{productName}</h1>
+            <h1>{productName}</h1>
             <p
               className="text-muted my-3"
               style={{ lineHeight: "1.8", fontSize: "1.2rem" }}

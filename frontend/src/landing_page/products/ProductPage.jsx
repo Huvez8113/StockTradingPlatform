@@ -32,7 +32,12 @@ function ProductPage() {
         productName="Varsity mobile"
         productDesc="An easy to grasp, collection of stock market lessons with in-depth coverage and illustrations. Content is broken down into bite-size cards to help you learn on the go."
       />
-
+      <h5 className="text-center mt-5 mb-5">
+        Want to know more about our technology stack? Check out the{" "}
+        <a href="" style={{ textDecoration: "none" }}>
+          Zerodha.tech
+        </a> blog.
+      </h5>
       <Universe />
     </>
   );
