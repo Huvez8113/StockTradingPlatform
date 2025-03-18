@@ -4,19 +4,97 @@ const express = require("express");
 const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { body, validationResult } = require("express-validator");
+const cookieParser = require("cookie-parser");
 
 const { HoldingsModel } = require("./models/HoldingsModels");
 const { PositionsModel } = require("./models/PositionsModels");
 const { OrdersModel } = require("./models/OrdersModels");
+const User = require("./models/UserModel");
 
 const PORT = process.env.PORT || 8080;
 const URL = process.env.MONGO_URL;
-
-
+const JWT_SECRET = process.env.JWT_SECRET || process.env.KEY;
 
 const app = express();
-app.use(cors());
+
+const corsOptions = {
+  origin: ["http://localhost:5173", "http://localhost:3001"], // ✅ Allow frontend
+  credentials: true, // ✅ Allow cookies (JWT storage)
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  allowedHeaders: "Content-Type,Authorization"
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
+app.use(cookieParser());
+
+//User Registration
+app.post("/register", async (req, res) => {
+  const { name, email, password } = req.body;
+  if(!name || !email || !password){
+    return res.status(400).json({msg : "All fields are required"});
+  }
+
+  try {
+    let user = await User.findOne({email});
+    if( user ) return res.status(400).json({msg : "User already exists"});
+
+    const hashedPassword = await bcrypt.hash(password,10);
+    user = new User({name, email, password : hashedPassword});
+
+    await user.save();
+    res.json({ msg : "User registered successfully" });
+  } catch (e) {
+    console.error("Registration Error", err);
+    res.status(500).json({ msg : "Server Error" });
+  }
+})
+
+//User Login
+app.post("/login", async (req, res) => {
+  const { email, password } = req.body;
+  try {
+    let user = await User.findOne({ email });
+    if (!user) return res.status(400).json({ msg: "Invalid credentials" });
+
+    console.log("🔍 Stored Hashed Password:", user.password);
+    console.log("🔑 Entered Password:", password);
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
+
+    const token = jwt.sign({ userId: user._id }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res
+      .cookie("token", token, { httpOnly: true, secure:false, sameSite:"lax" })
+      .json({ msg: "Login Successful", token, user: { id: user._id, email: user.email } });
+  } catch (err) {
+    res.status(500).json({ msg: "Server Error " });
+  }
+});
+
+app.post("/logout", (req,res) => {
+  res.clearCookie("token", { httpOnly : true, sameSite:"lax"});
+  res.status(200).json({msg : "Logged Out Successfully"});
+})
+
+// Middleware to protect routes
+const verifyToken = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ msg: "Access Denied " });
+
+  try {
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(401).json({ msg: "Invalid token" });
+  }
+};
 
 // Holdings Data
 // app.get("/addHolding", async (req, res) => {
@@ -146,7 +224,6 @@ app.use(bodyParser.json());
 //   res.send("Done!")
 // });
 
-
 // Positions Data
 // app.get("/addPositions", async (req, res) => {
 //   let tempPositions = [
@@ -188,22 +265,27 @@ app.use(bodyParser.json());
 //   res.send("Done!");
 // });
 
-app.get('/allHoldings', async(req,res) => {
+//Protected Dashboard Route
+app.get("/dashboard", verifyToken, (req, res) => {
+  res.json({ msg: "Welcome to Dashboard", user: req.user });
+});
+
+app.get("/allHoldings", async (req, res) => {
   let allHoldings = await HoldingsModel.find({});
   res.json(allHoldings);
 });
 
-app.get('/allPositions', async(req,res) => {
+app.get("/allPositions", async (req, res) => {
   let allPositions = await PositionsModel.find({});
   res.json(allPositions);
 });
 
 app.post("/addOrder", async (req, res) => {
   let newOrder = new OrdersModel({
-    name : req.body.name,
-    qty : req.body.qty,
-    price : req.body.price,
-    mode : req.body.mode,
+    name: req.body.name,
+    qty: req.body.qty,
+    price: req.body.price,
+    mode: req.body.mode,
   });
 
   newOrder.save();

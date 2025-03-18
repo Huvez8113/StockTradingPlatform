@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
+import axios from "axios";
 
 function Menu() {
   const [selectedMenu, setSelectedMenu] = useState(0);
@@ -12,6 +13,16 @@ function Menu() {
   const handleProfileClick = (index) => {
     setIsProfileDropdownOpen(!isProfileDropdownOpen);
   };
+
+  const handleLogout = async() => {
+    try{
+      await axios.post("http://localhost:8080/logout",{},{withCredentials : true});
+      localStorage.removeItem("token");
+      window.location.href = "http://localhost:5173/";
+    } catch(err){
+      console.error("Logout failed", err);
+    }
+  }
 
   const menuClass = "menu";
   const activeMenuClass = "menu selected";
@@ -82,7 +93,7 @@ function Menu() {
           <hr />
           <div className="profile" onClick={handleProfileClick}>
             <div className="avatar">ZU</div>
-            <p className="username">USERID</p>
+            <p className="username" onClick={handleLogout}>Log Out</p>
           </div>
           {/* {isProfileDropdownOpen} */}
         </div>
