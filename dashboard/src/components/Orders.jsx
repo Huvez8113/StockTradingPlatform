@@ -2,13 +2,14 @@ import { useContext, useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import GeneralContext from "./GeneralContext";
 import axios from "axios";
+import API_BASE_URL from "../config";
 
 function Orders() {
   const [orders, setOrders] = useState([]);
   const { holdingsUpdated } = useContext(GeneralContext);
 
   const fetchOrders = () => {
-    axios.get("http://localhost:8080/allOrders").then((res) => {
+    axios.get(`${API_BASE_URL}/allOrders`).then((res) => {
       console.log("Orders Updated : ", res.data);
       setOrders(res.data);
     });

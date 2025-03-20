@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import axios from 'axios';
 import { VerticalGraph } from "./VerticalGraph";
 import GeneralContext from "./GeneralContext";
+import API_BASE_URL from "../config";
 
 
 function Holdings() {
@@ -11,7 +12,7 @@ function Holdings() {
   const { holdingsUpdated } = useContext(GeneralContext);
 
   const fetchHoldings = () => {
-    axios.get("http://localhost:8080/allHoldings").then((res) => {
+    axios.get(`${API_BASE_URL}/allHoldings`).then((res) => {
       console.log("Holdings Updated : ", res.data);
       setAllHoldings(res.data);
     });

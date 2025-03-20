@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 import axios from "axios";
+import API_BASE_URL from "../config";
 
 function Menu() {
   const [selectedMenu, setSelectedMenu] = useState(0);
@@ -17,11 +18,11 @@ function Menu() {
 
   const handleLogout = async() => {
     try{
-      await axios.post("http://localhost:8080/logout",{},{withCredentials : true});
+      await axios.post(`${API_BASE_URL}/logout`,{},{withCredentials : true});
       setAlert({ type: "success", message: "Logged out successfully! Redirecting..." });
       localStorage.removeItem("token");
       setTimeout(() => {
-        window.location.href = "http://localhost:5173/";
+        window.location.href = "https://stocktradingplatform-1.onrender.com";
       }, 2000);
     } catch(err){
       setAlert({ type: "danger", message: "Logout failed! Try again." });

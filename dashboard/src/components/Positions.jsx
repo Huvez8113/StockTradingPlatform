@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 // import { positions } from "../data/data";
+import API_BASE_URL from "../config";
 
 import axios from "axios";
 
@@ -8,7 +9,7 @@ function Positions() {
   const [allPositions, setAllPositions] = useState([]);
 
   useEffect(() => {
-    axios.get("http://localhost:8080/allPositions").then((res) => {
+    axios.get(`${API_BASE_URL}/allPositions`).then((res) => {
       console.log(res.data);
       setAllPositions(res.data);
     });

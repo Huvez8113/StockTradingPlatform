@@ -3,6 +3,7 @@ import axios from "axios";
 import GeneralContext from "./GeneralContext";
 import { Link } from "react-router-dom";
 import './BuyActionWindow.css';
+import API_BASE_URL from "../config";
 
 function SellActionWindows({ uid }) {
 
@@ -11,7 +12,7 @@ function SellActionWindows({ uid }) {
     const { closeSellWindow, refreshHoldings } = useContext(GeneralContext);
 
     const handleSellClick = () => {
-        axios.post("http://localhost:8080/addOrder",{
+        axios.post(`${API_BASE_URL}/addOrder`,{
             name: uid,
             qty : stockQuantity,
             price : stockPrice,
