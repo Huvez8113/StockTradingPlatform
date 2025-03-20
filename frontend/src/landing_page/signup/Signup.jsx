@@ -13,7 +13,7 @@ function Signup() {
   const handleSignup = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API_BASE_URL}`, {
+      await axios.post(`${API_BASE_URL}/register`, {
         name,
         email,
         password,
