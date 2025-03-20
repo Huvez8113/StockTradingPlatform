@@ -1,6 +1,8 @@
 import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import API_BASE_URL from "../../config";
+
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -12,7 +14,7 @@ function Login() {
     e.preventDefault();
     try {
       const res = await axios.post(
-        "http://localhost:8080/login",
+        `${API_BASE_URL}`,
         { email, password },
         { withCredentials: true }
       );
@@ -20,7 +22,7 @@ function Login() {
 
       localStorage.setItem("token", res.data.token);
       setTimeout(() => {
-        window.location.href = "http://localhost:3001";
+        window.location.href = "https://stocktradingplatform-2.onrender.com";
       },2000);
     } catch (err) {
       setAlert({ type: "danger", message: "Invalid credentials. Please try again!" });
