@@ -21,7 +21,7 @@ const JWT_SECRET = process.env.JWT_SECRET || process.env.KEY;
 const app = express();
 
 const corsOptions = {
-  origin: ["http://localhost:5173", "http://localhost:3001"], // ✅ Allow frontend
+  origin: ["https://stocktradingplatform-1.onrender.com", "https://stocktradingplatform-2.onrender.com"], // ✅ Allow frontend
   credentials: true, // ✅ Allow cookies (JWT storage)
   methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   allowedHeaders: "Content-Type,Authorization"
