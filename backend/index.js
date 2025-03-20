@@ -48,7 +48,7 @@ app.post("/register", async (req, res) => {
     await user.save();
     res.json({ msg : "User registered successfully" });
   } catch (e) {
-    console.error("Registration Error", err);
+    // console.error("Registration Error", err);
     res.status(500).json({ msg : "Server Error" });
   }
 })
@@ -60,8 +60,8 @@ app.post("/login", async (req, res) => {
     let user = await User.findOne({ email });
     if (!user) return res.status(400).json({ msg: "Invalid credentials" });
 
-    console.log("🔍 Stored Hashed Password:", user.password);
-    console.log("🔑 Entered Password:", password);
+    // console.log("🔍 Stored Hashed Password:", user.password);
+    // console.log("🔑 Entered Password:", password);
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials" });
@@ -291,6 +291,11 @@ app.post("/addOrder", async (req, res) => {
   newOrder.save();
   res.send("Order saved!");
 });
+
+app.get("/allOrders", async(req, res) => {
+  let allOrders = await OrdersModel.find({});
+  res.json(allOrders);
+})
 
 mongoose
   .connect(URL)

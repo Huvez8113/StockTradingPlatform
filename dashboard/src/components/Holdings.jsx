@@ -1,19 +1,61 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 // import { holdings } from "../data/data";
 import axios from 'axios';
+import { VerticalGraph } from "./VerticalGraph";
+import GeneralContext from "./GeneralContext";
 
 
 function Holdings() {
 
   const [allHoldings, setAllHoldings] = useState([]);
+  const { holdingsUpdated } = useContext(GeneralContext);
+
+  const fetchHoldings = () => {
+    axios.get("http://localhost:8080/allHoldings").then((res) => {
+      console.log("Holdings Updated : ", res.data);
+      setAllHoldings(res.data);
+    });
+  };
 
   useEffect(() => {
-    axios.get("http://localhost:8080/allHoldings").then((res) => {
-      console.log(res.data);
-      setAllHoldings(res.data);
-    })
-  }, [])
+    fetchHoldings();
+  }, [holdingsUpdated]);
 
+  // useEffect(() => {
+  //   axios.get("http://localhost:8080/allHoldings").then((res) => {
+  //     console.log(res.data);
+  //     setAllHoldings(res.data);
+  //   })
+  // }, [])
+
+  // export const data = {
+  //   labels,
+  //   datasets: [
+  //     {
+  //       label: 'Dataset 1',
+  //       data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+  //       backgroundColor: 'rgba(255, 99, 132, 0.5)',
+  //     },
+  //     {
+  //       label: 'Dataset 2',
+  //       data: labels.map(() => faker.datatype.number({ min: 0, max: 1000 })),
+  //       backgroundColor: 'rgba(53, 162, 235, 0.5)',
+  //     },
+  //   ],
+  // };
+
+  const labels = allHoldings.map((subArray) => subArray["name"]);
+
+  const data = {
+    labels,
+    datasets:[
+      {
+        label : "Stock Price",
+        data: allHoldings.map((stock) => stock.price),
+        backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      },
+    ],
+  }
 
   return (
     <>
@@ -71,6 +113,7 @@ function Holdings() {
           <p>P&L</p>
         </div>
       </div>
+      <VerticalGraph data={data}/>
     </>
   );
 }

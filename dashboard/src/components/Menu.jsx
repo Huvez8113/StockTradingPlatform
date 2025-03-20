@@ -5,6 +5,7 @@ import axios from "axios";
 function Menu() {
   const [selectedMenu, setSelectedMenu] = useState(0);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
+  const [alert, setAlert] = useState(null);
 
   const handleMenuClick = (index) => {
     setSelectedMenu(index);
@@ -17,10 +18,13 @@ function Menu() {
   const handleLogout = async() => {
     try{
       await axios.post("http://localhost:8080/logout",{},{withCredentials : true});
+      setAlert({ type: "success", message: "Logged out successfully! Redirecting..." });
       localStorage.removeItem("token");
-      window.location.href = "http://localhost:5173/";
+      setTimeout(() => {
+        window.location.href = "http://localhost:5173/";
+      }, 2000);
     } catch(err){
-      console.error("Logout failed", err);
+      setAlert({ type: "danger", message: "Logout failed! Try again." });
     }
   }
 
@@ -30,7 +34,9 @@ function Menu() {
   return (
     <>
       <div className="menu-container">
+      
         <img src="logo.png" style={{ width: "50px" }} />
+        {alert && <div className={`alert alert-${alert.type}`} role="alert">{alert.message}</div>}
         <div className="menus">
           <ul>
             <li>
