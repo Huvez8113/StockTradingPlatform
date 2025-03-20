@@ -12,12 +12,13 @@ import Navbar from "./landing_page/Navbar";
 import Footer from "./landing_page/Footer";
 import NotFound from "./landing_page/NotFound";
 import Login from "./landing_page/signup/Login";
+import API_BASE_URL from "./config";
 
 
 function PrivateRoute({ children }) {
   const [auth, setAuth] = useState(null);
   useEffect(() => {
-    axios.get("http://localhost:8080/dashboard", { withCredentials: true })
+    axios.get(`${API_BASE_URL}/dashboard`, { withCredentials: true })
       .then(() => setAuth(true))
       .catch(() => setAuth(false));
   }, []);
